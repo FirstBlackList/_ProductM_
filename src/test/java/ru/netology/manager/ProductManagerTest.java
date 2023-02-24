@@ -10,52 +10,56 @@ import org.junit.jupiter.api.Assertions;
 public class ProductManagerTest {
     ProductRepository repository = new ProductRepository();
     ProductManager manager = new ProductManager(repository);
-    Product book = new Book(1, "Harry Potter", 760, "J.K. Rowling");
-    Product smartphone = new Smartphone(2, "SONY Xperia", 125_000, "Sony Mobile");
-    Product product = new Product(3, "Watch", 44000);
+    Product book = new Book(1, "Samsung. Change management strategies from a global leader in innovation and design",
+            760, "Song, Lee");
+    Product book2 = new Book(2, "Метро 2033", 100, "Д. Глуховский");
+    Product smartphone = new Smartphone(3, "SONY Xperia", 125_000, "Sony Mobile");
+    Product smartphone2 = new Smartphone(4, "Samsung", 140_000, "Samsung Group");
+    Product product = new Product(5, "Watch", 44000);
 
     @Test
-    void shouldAdd() {
+    void shouldAddMin() {
         manager.addProduct(smartphone);
         Assertions.assertArrayEquals(new Product[]{smartphone}, repository.findAll());
     }
 
     @Test
-    void shouldAddAll() {
+    void shouldAddAllMax() {
         manager.addProduct(book);
+        manager.addProduct(book2);
         manager.addProduct(smartphone);
+        manager.addProduct(smartphone2);
         manager.addProduct(product);
-        Assertions.assertArrayEquals(new Product[]{book, smartphone, product}, repository.findAll());
+        Assertions.assertArrayEquals(new Product[]{book, book2, smartphone, smartphone2, product}, repository.findAll());
     }
 
     @Test
-    void shouldSearchBy() {
+    void searchForOneProduct() {
         manager.addProduct(book);
+        manager.addProduct(book2);
         manager.addProduct(smartphone);
+        manager.addProduct(smartphone2);
         manager.addProduct(product);
-        Assertions.assertArrayEquals(new Product[]{book}, manager.searchByName(book.getName()));
+        Assertions.assertArrayEquals(new Product[]{book2}, manager.searchByName("Метро 2033"));
+    }
+
+
+    @Test
+    void searchForTwoProduct() {
+        manager.addProduct(book);
+        manager.addProduct(book2);
+        manager.addProduct(smartphone);
+        manager.addProduct(smartphone2);
+        manager.addProduct(product);
+        Assertions.assertArrayEquals(new Product[]{book, smartphone2}, manager.searchByName("Samsung"));
     }
 
     @Test
-    void shouldSearchWhenFewProductsSuit() {
+    void searchForProductAvailability() {
         manager.addProduct(book);
+        manager.addProduct(book2);
         manager.addProduct(smartphone);
-        manager.addProduct(product);
-        Assertions.assertArrayEquals(new Product[]{smartphone}, manager.searchByName(smartphone.getName()));
-    }
-
-    @Test
-    void shouldSearchWhenFewProducts() {
-        manager.addProduct(book);
-        manager.addProduct(smartphone);
-        manager.addProduct(product);
-        Assertions.assertArrayEquals(new Product[]{product}, manager.searchByName(product.getName()));
-    }
-
-    @Test
-    void shouldSearchWhenProductsNotSuit() {
-        manager.addProduct(book);
-        manager.addProduct(smartphone);
+        manager.addProduct(smartphone2);
         manager.addProduct(product);
         Assertions.assertArrayEquals(new Product[]{}, manager.searchByName("Sony Playstation"));
     }
